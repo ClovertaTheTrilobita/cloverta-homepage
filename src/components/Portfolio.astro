@@ -1,6 +1,7 @@
 ---
 import Home from './Home.astro';
 import About from './About.astro';
+import Backgrounds from './Backgrounds.astro';
 
 interface Props { initialView?: 'home' | 'about'; }
 const { initialView = 'home' } = Astro.props;
@@ -8,6 +9,7 @@ const { initialView = 'home' } = Astro.props;
 
 <script is:inline>document.documentElement.classList.add('portfolio-js');</script>
 <div class="portfolio" data-view={initialView}>
+	<Backgrounds />
 	<div class="home-view" inert={initialView === 'about'}><Home /></div>
 	<div class="about-view" inert={initialView === 'home'}><About /></div>
 </div>
@@ -17,7 +19,8 @@ const { initialView = 'home' } = Astro.props;
 </script>
 
 <style is:global>
-	.portfolio { position: relative; min-height: 100svh; }
+	.portfolio { position: relative; min-height: 100svh; isolation: isolate; }
+	.portfolio.is-transitioning, .portfolio.is-copy-entering { overflow: clip; }
 	.portfolio[data-view='home'] .about-view, .portfolio[data-view='about'] .home-view { display: none; }
 	.portfolio.is-transitioning .home-view { display: block; position: absolute; left: 0; top: 0; width: 100%; }
 	.portfolio.is-transitioning .about-view { display: block; position: relative; }

@@ -1,46 +1,166 @@
 <main class="about-page" aria-labelledby="about-title">
-	<header class="about-header">
-		<h1 id="about-title" class="about-title" tabindex="-1">About Me</h1>
-		<a class="about-return" href="/" aria-label="返回主页" title="Back to home">
-			<span class="return-bounce" aria-hidden="true"><span class="return-chevron"></span></span>
-		</a>
-	</header>
-	<div class="about-copy">
-		<p>Nice to emm... Nice to meet you!</p>
-		<p>(Shake hands)</p>
-		<p>Just to let you know I’ve been sitting in here for over an hour but still can’t came up with any nice intro so please don’t expect too much.</p>
-		<p>I’m a college student. (At least until now)</p>
-		<p>I study Software Engineering. (Wait did I just said that before?)</p>
-		<p>I haven’t done much achievement so far. (Oh don’t say it out loud...)</p>
-		<p>I love Nintendo. (It’s true classic.)</p>
-		<p>You can checkout <a href="https://blog.cloverta.top" target="_blank" rel="noopener noreferrer">My Blog</a> in case you find anything interesting.</p>
-	</div>
+    <header class="about-header">
+        <h1 id="about-title" class="about-title" tabindex="-1">About Me</h1>
+        <a
+            class="about-return"
+            href="/"
+            aria-label="返回主页"
+            title="Back to home"
+        >
+            <span class="return-bounce" aria-hidden="true"
+                ><span class="return-chevron"></span></span
+            >
+        </a>
+    </header>
+    <div class="about-copy">
+        <p>Nice to emm... Nice to meet you!</p>
+        <p>(Shake hands)</p>
+        <p>
+            Just to let you know I’ve been sitting in here for over an hour but
+            still can’t came up with any nice intro so please don’t expect too
+            much.
+        </p>
+        <p>I’m a college student. (At least until now)</p>
+        <p>I study Software Engineering. (Wait did I just said that before?)</p>
+        <p>
+            I haven’t done much achievement so far. (Oh don’t say it out
+            loud...)
+        </p>
+        <p>I love Nintendo. (It’s true classic.)</p>
+        <p>
+            You can checkout <a
+                href="https://blog.cloverta.top"
+                target="_blank"
+                rel="noopener noreferrer">My Blog</a
+            > in case you find anything interesting.
+        </p>
+    </div>
 </main>
 
 <style>
-	@font-face { font-family: 'Josefin Slab'; src: url('/fonts/josefin-slab.woff2') format('woff2'); font-weight: 300; font-style: normal; font-display: swap; }
-	.about-page { width: 88.3%; max-width: 1500px; margin-inline: auto; min-height: 100svh; padding: 80px 0 86px; color: #080808; }
-	.about-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-	.about-title { margin: 0; font: 400 48px/1.2 var(--display-font); outline: none; }
-	.about-return { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; color: #707070; }
-	.return-bounce { display: grid; place-items: center; width: 100%; height: 100%; animation: return-bounce 2.8s ease-in-out infinite; }
-	.return-chevron { display: block; width: 24px; height: 24px; border-top: 4px solid currentColor; border-right: 4px solid currentColor; border-radius: 1px; transform: translateY(7px) rotate(-45deg); }
-	.about-return:hover { color: #252525; }
-	.about-copy { margin-top: 38px; font: 300 32px/1.45 'Josefin Slab', 'Times New Roman', serif; }
-	.about-copy p { margin: 0 0 12px; }
-	.about-copy p:last-child { margin-bottom: 0; }
-	.about-copy a { color: #00a6c4; text-decoration: underline; text-underline-offset: 3px; }
-	.about-copy a:hover { color: #007a92; }
-	:global(.about-line) { display: block; white-space: nowrap; }
-	@keyframes return-bounce { 0%, 30%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } 65% { transform: translateY(0); } 75% { transform: translateY(-3px); } 85% { transform: translateY(0); } }
-	@media (max-width: 1000px) and (min-width: 761px) { .about-copy { font-size: 28px; } }
-	@media (max-width: 760px) {
-		.about-page { width: auto; margin-inline: 28px; padding: 52px 0 40px; }
-		.about-title { font-size: 36px; }
-		.about-copy { margin-top: 30px; font-size: 22px; line-height: 1.5; }
-		.about-copy p { margin-bottom: 14px; }
-		.return-chevron { width: 21px; height: 21px; border-width: 3px; }
-	}
-	@media (max-width: 360px) { .about-page { margin-inline: 20px; } }
-	@media (prefers-reduced-motion: reduce) { .return-bounce { animation: none; } }
+    @font-face {
+        font-family: "Josefin Slab";
+        src: url("/fonts/josefin-slab.woff2") format("woff2");
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+    .about-page {
+        width: 88.3%;
+        max-width: 1500px;
+        margin-inline: auto;
+        min-height: 100svh;
+        padding: 80px 0 86px;
+        color: #080808;
+    }
+    .about-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+    }
+    .about-title {
+        margin: 0;
+        font: 400 48px/1.2 var(--display-font);
+        outline: none;
+    }
+    .about-return {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        color: #707070;
+    }
+    .return-bounce {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        animation: return-bounce 2.8s ease-in-out infinite;
+    }
+    .return-chevron {
+        display: block;
+        width: 24px;
+        height: 24px;
+        border-top: 4px solid currentColor;
+        border-right: 4px solid currentColor;
+        border-radius: 1px;
+        transform: translateY(7px) rotate(-45deg);
+    }
+    .about-return:hover {
+        color: #252525;
+    }
+    .about-copy {
+        margin-top: 38px;
+        font:
+            300 24px/1.45 "Josefin Slab",
+            "Times New Roman",
+            serif;
+    }
+    .about-copy p {
+        margin: 0 0 12px;
+    }
+    .about-copy p:last-child {
+        margin-bottom: 0;
+    }
+    .about-copy a {
+        color: #00a6c4;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .about-copy a:hover {
+        color: #007a92;
+    }
+    @keyframes return-bounce {
+        0%,
+        30%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+        65% {
+            transform: translateY(0);
+        }
+        75% {
+            transform: translateY(-3px);
+        }
+        85% {
+            transform: translateY(0);
+        }
+    }
+    @media (max-width: 760px) {
+        .about-page {
+            width: auto;
+            margin-inline: 28px;
+            padding: 52px 0 40px;
+        }
+        .about-title {
+            font-size: 36px;
+        }
+        .about-copy {
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+        .about-copy p {
+            margin-bottom: 14px;
+        }
+        .return-chevron {
+            width: 21px;
+            height: 21px;
+            border-width: 3px;
+        }
+    }
+    @media (max-width: 360px) {
+        .about-page {
+            margin-inline: 20px;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .return-bounce {
+            animation: none;
+        }
+    }
 </style>

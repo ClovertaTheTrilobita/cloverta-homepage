@@ -1,32 +1,9 @@
 ---
 import { socialLinks } from '../data/profile';
-
-const menuItems = [
-	{ label: 'Blog', href: 'https://blog.cloverta.top', backdrop: 'https://blog.cloverta.top', id: 'blog' },
-	{ label: 'Projects', href: 'https://github.com/ClovertaTheTrilobita', backdrop: 'https://github.com/ClovertaTheTrilobita', id: 'projects' },
-	{ label: 'About Me', href: '/about/', backdrop: 'More About Me', id: 'about' },
-];
+import { menuItems } from '../data/navigation';
 ---
 
 <main class="homepage">
-	<div class="backgrounds" aria-hidden="true">
-		{menuItems.map((item) => (
-			<div class="backdrop" data-background={item.id} style={`--scroll-duration: ${Math.max(140, item.backdrop.length * 8)}s`}>
-				<div class="backdrop-grid">
-					{Array.from({ length: 13 }, (_, row) => (
-						<div class="backdrop-row" style={`--row: ${row}`}>
-							{Array.from({ length: 2 }, () => (
-								<div class="backdrop-track">
-									{Array.from({ length: 8 }, () => <span>{item.backdrop}</span>)}
-								</div>
-							))}
-						</div>
-					))}
-				</div>
-			</div>
-		))}
-	</div>
-
 	<div class="composition">
 		<header class="identity">
 			<h1>ClovertaTheTrilobita</h1>
@@ -78,7 +55,9 @@ const menuItems = [
 
 <script>
 	const backgrounds = document.querySelectorAll<HTMLElement>('[data-background]');
+	const portfolio = document.querySelector<HTMLElement>('.portfolio');
 	const activateBackground = (id?: string) => {
+		if (portfolio?.dataset.view !== 'home' || portfolio.classList.contains('is-transitioning')) return;
 		backgrounds.forEach((background) => background.classList.toggle('visible', background.dataset.background === id));
 	};
 	document.querySelectorAll<HTMLElement>('[data-menu]').forEach((item) => {
@@ -123,18 +102,6 @@ const menuItems = [
 	.registrations { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 	.security { display: inline-flex; align-items: center; gap: 3px; }
 	.footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
-	.backgrounds { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-	.backdrop { position: absolute; inset: 0; opacity: 0; transition: opacity 400ms ease; mask-image: linear-gradient(to right, transparent 15%, #000 25%, #000 50%, transparent 60%), linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%); mask-composite: intersect; }
-	.backdrop.visible { opacity: 1; }
-	.backdrop-grid { position: absolute; top: 50%; left: 50%; display: flex; flex-direction: column; gap: 64px; width: max(220vw, 2600px); transform: translate(-50%, -50%) rotate(-30deg); }
-	.backdrop-row { --row-offset: calc(mod(var(--row), 2) * 130px); display: flex; width: max-content; animation: backdrop-scroll var(--scroll-duration) linear infinite; animation-play-state: paused; }
-	.backdrop.visible .backdrop-row { animation-play-state: running; }
-	.backdrop-track { display: flex; flex-shrink: 0; gap: 110px; padding-right: 110px; }
-	.backdrop-row span { flex-shrink: 0; color: #dedede; font: 400 38px/1.4 'Source Han Serif', 'Noto Serif CJK SC', serif; white-space: nowrap; }
-	@keyframes backdrop-scroll {
-		from { transform: translateX(calc(-50% + var(--row-offset))); }
-		to { transform: translateX(var(--row-offset)); }
-	}
 
 	@media (min-width: 1700px) {
 		h1 { font-size: 94px; }
@@ -169,16 +136,11 @@ const menuItems = [
 		.interests { font-size: 14px; }
 		.footer { width: 100%; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 36px; font-size: 11px; letter-spacing: .1px; }
 		.registrations { flex-wrap: wrap; gap: 6px; }
-		.backdrop { mask-image: linear-gradient(to right, transparent 65%, #000 75%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%); }
-		.backdrop-grid { gap: 45px; }
-		.backdrop-track { gap: 70px; padding-right: 70px; }
-		.backdrop-row span { font-size: 26px; }
 	}
 	@media (max-width: 360px) {
 		.composition { --mobile-left-gutter: 20px; --mobile-profile-gap: 15px; }
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.menu-item, .arrow-shaft, .backdrop, .social-link { transition: none; }
-		.backdrop-row { animation: none; transform: translateX(var(--row-offset)); }
+		.menu-item, .arrow-shaft, .social-link { transition: none; }
 	}
 </style>

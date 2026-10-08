@@ -1,0 +1,49 @@
+---
+import { menuItems } from '../data/navigation';
+---
+
+<div class="backgrounds" aria-hidden="true">
+	{menuItems.map((item) => (
+		<div class="backdrop" data-background={item.id} style={`--scroll-duration: ${Math.max(140, item.backdrop.length * 8)}s`}>
+			<div class="backdrop-grid">
+				{Array.from({ length: 13 }, (_, row) => (
+					<div class="backdrop-row" style={`--row: ${row}`}>
+						{Array.from({ length: 2 }, () => (
+							<div class="backdrop-track">
+								{Array.from({ length: 8 }, () => <span>{item.backdrop}</span>)}
+							</div>
+						))}
+					</div>
+				))}
+			</div>
+		</div>
+	))}
+</div>
+
+<style>
+	.backgrounds { position: fixed; inset: 0; z-index: -1; overflow: clip; pointer-events: none; --about-backdrop-shift: 50vw; }
+	.backdrop { position: absolute; inset: 0; opacity: 0; transform: translateX(0); transition: opacity 400ms ease; mask-image: linear-gradient(to right, transparent 15%, #000 25%, #000 50%, transparent 60%), linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%); mask-composite: intersect; }
+	.backdrop.visible, :global(.portfolio[data-view='about']) .backdrop[data-background='about'] { opacity: 1; }
+	:global(.portfolio[data-view='about']) .backdrop[data-background='about'] { transform: translateX(var(--about-backdrop-shift)); }
+	.backdrop-grid { position: absolute; top: 50%; left: 50%; display: flex; flex-direction: column; gap: 64px; width: max(220vw, 2600px); transform: translate(-50%, -50%) rotate(-30deg); }
+	.backdrop-row { --row-offset: calc(mod(var(--row), 2) * 130px); display: flex; width: max-content; animation: backdrop-scroll var(--scroll-duration) linear infinite; animation-play-state: paused; }
+	.backdrop.visible .backdrop-row, :global(.portfolio[data-view='about']) .backdrop[data-background='about'] .backdrop-row { animation-play-state: running; }
+	.backdrop-track { display: flex; flex-shrink: 0; gap: 110px; padding-right: 110px; }
+	.backdrop-row span { flex-shrink: 0; color: #dedede; font: 400 38px/1.4 'Source Han Serif', 'Noto Serif CJK SC', serif; white-space: nowrap; }
+	@keyframes backdrop-scroll {
+		from { transform: translateX(calc(-50% + var(--row-offset))); }
+		to { transform: translateX(var(--row-offset)); }
+	}
+	@media (max-width: 760px) {
+		/* The phone homepage already uses the rightmost quarter. */
+		.backgrounds { --about-backdrop-shift: 0px; }
+		.backdrop { mask-image: linear-gradient(to right, transparent 65%, #000 75%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%); }
+		.backdrop-grid { gap: 45px; }
+		.backdrop-track { gap: 70px; padding-right: 70px; }
+		.backdrop-row span { font-size: 26px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.backdrop { transition: none; }
+		.backdrop-row { animation: none; transform: translateX(var(--row-offset)); }
+	}
+</style>

@@ -1,5 +1,3 @@
-import { createLineSplitter } from './about-lines';
-
 type View = 'home' | 'about';
 const root = document.querySelector<HTMLElement>('.portfolio');
 
@@ -13,29 +11,34 @@ if (root) {
 	const back = about.querySelector<HTMLAnchorElement>('.about-return')!;
 	const chevron = back.querySelector<HTMLElement>('.return-chevron')!;
 	const copy = about.querySelector<HTMLElement>('.about-copy')!;
-	const splitLines = createLineSplitter(copy);
+	const backdrop = root.querySelector<HTMLElement>('[data-background="about"]')!;
+	const backgrounds = root.querySelectorAll<HTMLElement>('[data-background]');
 	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 	const homePageTitle = '三叶草 -More About Me-';
+	const travel = 800;
+	const copyTravel = travel;
 	let view = root.dataset.view as View;
 	let destination = view;
 	let sequence = 0;
 	let homeScroll = 0;
 	let animations: Animation[] = [];
-	let introAnimations: Animation[] = [];
+	let copyAnimation: Animation | undefined;
 	let clones: HTMLElement[] = [];
-	let duration = 0;
 	let width = innerWidth;
 	let resizeTimer: ReturnType<typeof setTimeout>;
 	let backRequested = false;
 	history.scrollRestoration = 'manual';
 	const fontsReady = Promise.all([
 		document.fonts.load('400 48px "ZCOOL QingKe HuangYou"'),
-		document.fonts.load('300 32px "Josefin Slab"'),
+		document.fonts.load('300 17px "Josefin Slab"'),
 	]).catch(() => []);
 
 	const clearTimeline = () => {
 		animations.forEach((animation) => animation.cancel());
 		animations = [];
+		copyAnimation?.cancel();
+		copyAnimation = undefined;
+		root.classList.remove('is-copy-entering');
 		clones.forEach((clone) => clone.remove());
 		clones = [];
 		homeLink.style.visibility = '';
@@ -47,7 +50,7 @@ if (root) {
 		view = next;
 		destination = next;
 		root.dataset.view = next;
-		root.classList.remove('is-transitioning');
+		root.classList.remove('is-transitioning', 'is-copy-entering');
 		root.style.minHeight = '';
 		home.inert = next !== 'home';
 		about.inert = next !== 'about';
@@ -58,37 +61,45 @@ if (root) {
 		document.title = next === 'about' ? 'About Me · ClovertaTheTrilobita' : homePageTitle;
 		if (next === 'home') {
 			clearTimeline();
+			backgrounds.forEach((background) => background.classList.remove('visible'));
 			home.style.top = '';
 			window.scrollTo(0, homeScroll);
 			if (moveFocus) homeLink.focus({ preventScroll: true });
-		} else if (moveFocus) {
-			title.focus({ preventScroll: true });
+		} else {
+			if (moveFocus) title.focus({ preventScroll: true });
 		}
 	};
 
+	const createCopyAnimation = (time: number) => {
+		const distance = Math.max(innerHeight, innerHeight - copy.getBoundingClientRect().top + 24);
+		copyAnimation = copy.animate([
+			{ transform: 'translateY(0)' },
+			{ transform: `translateY(${distance}px)` },
+		], { duration: copyTravel, fill: 'both', easing: 'cubic-bezier(.55, 0, .2, 1)' });
+		copyAnimation.pause();
+		copyAnimation.currentTime = time;
+	};
+
 	const createTimeline = () => {
-		introAnimations.forEach((animation) => animation.cancel());
-		introAnimations = [];
 		root.classList.add('is-transitioning');
 		home.style.top = `${-homeScroll}px`;
 		root.style.minHeight = `${Math.max(innerHeight, about.scrollHeight)}px`;
-		const lines = splitLines();
 		copy.classList.add('is-ready');
-		const travel = 800;
-		const textStart = 600;
-		const lineStagger = 90;
-		const lineFade = 360;
-		duration = Math.max(travel, textStart + Math.max(0, lines.length - 1) * lineStagger + lineFade);
+		if (!copyAnimation) createCopyAnimation(view === 'home' ? copyTravel : 0);
 		const animate = (element: HTMLElement, keyframes: Keyframe[]) => {
-			const animation = element.animate(keyframes, { duration, fill: 'both' });
+			const animation = element.animate(keyframes, { duration: travel, fill: 'both' });
 			animation.pause();
 			animations.push(animation);
 		};
 		const movement = (start: Keyframe, end: Keyframe) => [
 			{ ...start, offset: 0, easing: 'cubic-bezier(.65, 0, .25, 1)' },
-			{ ...end, offset: travel / duration },
 			{ ...end, offset: 1 },
 		];
+		// Moving the masked layer by half the viewport carries its 25–50% band to 75–100%.
+		animate(backdrop, movement(
+			{ transform: 'translateX(0)' },
+			{ transform: `translateX(${getComputedStyle(backdrop).getPropertyValue('--about-backdrop-shift').trim()})` },
+		));
 
 		const startTitle = homeTitle.getBoundingClientRect();
 		const endTitle = title.getBoundingClientRect();
@@ -123,19 +134,9 @@ if (root) {
 		homeLink.style.visibility = 'hidden';
 		title.style.visibility = 'hidden';
 		chevron.style.visibility = 'hidden';
-		home.querySelectorAll<HTMLElement>('.identity, .profile, .navigation, .description, .footer, .backgrounds').forEach((element) => {
+		home.querySelectorAll<HTMLElement>('.identity, .profile, .navigation, .description, .footer').forEach((element) => {
 			const distance = Math.max(innerHeight + 40, element.getBoundingClientRect().bottom + 40);
 			animate(element, movement({ transform: 'translateY(0)' }, { transform: `translateY(${-distance}px)` }));
-		});
-		lines.forEach((line, index) => {
-			const start = (textStart + index * lineStagger) / duration;
-			const end = (textStart + index * lineStagger + lineFade) / duration;
-			animate(line, [
-				{ opacity: 0, transform: 'translateY(10px)', offset: 0 },
-				{ opacity: 0, transform: 'translateY(10px)', offset: start, easing: 'ease-out' },
-				{ opacity: 1, transform: 'translateY(0)', offset: end },
-				...(end < 1 ? [{ opacity: 1, transform: 'translateY(0)', offset: 1 }] : []),
-			]);
 		});
 	};
 
@@ -150,14 +151,16 @@ if (root) {
 			if (view === 'home') homeScroll = scrollY;
 			window.scrollTo(0, 0);
 			createTimeline();
-			animations.forEach((animation) => { animation.currentTime = view === 'home' ? 0 : duration; });
+			animations.forEach((animation) => { animation.currentTime = view === 'home' ? 0 : travel; });
 		}
 		if (reducedMotion.matches) {
-			animations.forEach((animation) => { animation.currentTime = next === 'about' ? duration : 0; });
+			animations.forEach((animation) => { animation.currentTime = next === 'about' ? travel : 0; });
+			copyAnimation!.currentTime = next === 'about' ? 0 : copyTravel;
 			settle(next);
 			return;
 		}
 		root.classList.add('is-transitioning');
+		backgrounds.forEach((background) => background.classList.toggle('visible', background === backdrop));
 		title.style.visibility = 'hidden';
 		chevron.style.visibility = 'hidden';
 		clones.forEach((clone) => { clone.style.display = ''; });
@@ -172,7 +175,15 @@ if (root) {
 			animation.play();
 			animation.startTime = next === 'about' ? startTime - time : startTime + time;
 		});
-		await Promise.allSettled(animations.map((animation) => animation.finished));
+		const pending = animations.map((animation) => animation.finished);
+		// One animation runs outward on return and backward on entry, including mid-flight reversals.
+		const copyTime = Number(copyAnimation!.currentTime ?? 0);
+		copyAnimation!.playbackRate = next === 'about' ? -1 : 1;
+		copyAnimation!.currentTime = copyTime;
+		copyAnimation!.play();
+		copyAnimation!.startTime = next === 'about' ? startTime + copyTime : startTime - copyTime;
+		pending.push(copyAnimation!.finished);
+		await Promise.allSettled(pending);
 		if (run === sequence) settle(next);
 	};
 
@@ -208,20 +219,25 @@ if (root) {
 			++sequence;
 			settle(destination, false);
 			clearTimeline();
-			if (view === 'about') { splitLines(); copy.classList.add('is-ready'); }
+			if (view === 'about') copy.classList.add('is-ready');
 		}, 120);
 	});
 
 	if (view === 'about') {
 		void fontsReady.then(() => {
 			if (sequence || destination !== 'about') return;
-			const lines = splitLines();
 			copy.classList.add('is-ready');
 			if (!reducedMotion.matches) {
-				introAnimations = lines.map((line, index) => line.animate([
-					{ opacity: 0, transform: 'translateY(10px)' },
-					{ opacity: 1, transform: 'translateY(0)' },
-				], { duration: 360, delay: index * 90, fill: 'both', easing: 'ease-out' }));
+				root.classList.add('is-copy-entering');
+				document.documentElement.style.overflow = 'hidden';
+				createCopyAnimation(copyTravel);
+				copyAnimation!.playbackRate = -1;
+				copyAnimation!.play();
+				void copyAnimation!.finished.then(() => {
+					if (sequence) return;
+					root.classList.remove('is-copy-entering');
+					document.documentElement.style.overflow = '';
+				}).catch(() => {});
 			}
 		});
 	}
