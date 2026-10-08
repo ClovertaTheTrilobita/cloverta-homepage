@@ -94,10 +94,10 @@
 	.follow-cursor { position: fixed; top: 0; left: 0; width: 0; height: 0; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity 140ms ease; }
 	.follow-cursor.is-visible { opacity: 1; }
 	.cursor-ring, .cursor-dot { position: absolute; top: 0; left: 0; border-radius: 50%; transform: translate(-50%, -50%); }
-	.cursor-ring { width: 28px; height: 28px; border: 1px solid rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
+	.cursor-ring { width: 28px; height: 28px; border: 2px solid rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
 	.cursor-dot { width: 5px; height: 5px; background: rgb(65 65 65); opacity: .78; transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
-	.is-hovering .cursor-ring { width: 48px; height: 48px; opacity: 0; }
-	.is-hovering .cursor-dot { width: 48px; height: 48px; opacity: .24; }
+	.is-hovering .cursor-ring { width: 56px; height: 56px; opacity: 0; }
+	.is-hovering .cursor-dot { width: 56px; height: 56px; opacity: .24; }
 	@media (prefers-reduced-motion: reduce) {
 		.follow-cursor, .cursor-ring, .cursor-dot { transition: none; }
 	}
