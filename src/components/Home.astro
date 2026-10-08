@@ -153,11 +153,11 @@ const menuItems = [
 		.social-links { flex-direction: column; flex-shrink: 0; justify-content: space-between; height: var(--avatar-size); gap: 0; margin-top: 0; }
 	}
 	@media (max-width: 760px) {
-		/* Reduce the visible space beside the profile by 40%, then another 50%. */
-		.composition { --mobile-left-gutter: 28px; --mobile-profile-gap: 24px; --base-avatar-size: clamp(150px, 42vw, 230px); --mobile-right-space: calc((100vw - var(--mobile-left-gutter) - var(--base-avatar-size) - var(--mobile-profile-gap) - 29px) * .3); --avatar-size: calc(100vw - var(--mobile-left-gutter) - var(--mobile-right-space) - var(--mobile-profile-gap) - 29px); display: flex; flex-direction: column; align-items: flex-start; gap: 0; width: auto; margin: 0 var(--mobile-right-space) 0 var(--mobile-left-gutter); min-height: 100svh; padding: 52px 0 28px; }
+		/* Keep the current phone composition size; wider screens add space on the right. */
+		.composition { --mobile-left-gutter: 28px; --mobile-profile-gap: 24px; --mobile-content-width: min(318px, calc(100vw - var(--mobile-left-gutter) - 28px)); --avatar-size: calc(var(--mobile-content-width) - var(--mobile-profile-gap) - 29px); display: flex; flex-direction: column; align-items: flex-start; gap: 0; width: var(--mobile-content-width); margin: 0 0 0 var(--mobile-left-gutter); min-height: 100svh; padding: 52px 0 28px; }
 		.identity, .profile, .navigation, .description, .footer { position: static; }
 		.identity { width: 100%; text-align: left; }
-		h1 { font-size: calc((100vw - var(--mobile-left-gutter) - var(--mobile-right-space)) / 7); }
+		h1 { font-size: calc(var(--mobile-content-width) / 7); }
 		.identity p { margin-top: 10px; font-size: 30px; }
 		.profile { width: 100%; gap: var(--mobile-profile-gap); margin-top: 38px; }
 		.social-link { width: 29px; height: 29px; }
@@ -165,8 +165,8 @@ const menuItems = [
 		.navigation::after { left: -18px; width: 174px; border-width: 2px; bottom: -16px; height: 37px; }
 		.menu-item { font-size: 32px; }
 		.description { margin-top: auto; }
-		.profession { font-size: clamp(21px, 5vw, 28px); }
-		.interests { font-size: clamp(14px, 3.55vw, 19px); }
+		.profession { font-size: 21px; }
+		.interests { font-size: 14px; }
 		.footer { width: 100%; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 36px; font-size: 11px; letter-spacing: .1px; }
 		.registrations { flex-wrap: wrap; gap: 6px; }
 		.backdrop { mask-image: linear-gradient(to right, transparent 65%, #000 75%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%); }
