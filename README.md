@@ -1,46 +1,47 @@
-# Astro Starter Kit: Basics
+# ClovertaTheTrilobita Homepage
+
+根据效果图制作的 Astro 个人主页。
+
+## 本地开发
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
+npm run dev -- --background
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+默认预览地址为 `http://localhost:4321`。后台服务管理：
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```sh
+npm run astro -- dev status
+npm run astro -- dev logs
+npm run astro -- dev stop
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+构建静态网站：
 
-## 🧞 Commands
+```sh
+npm run build
+```
 
-All commands are run from the root of the project, from a terminal:
+输出目录为 `dist/`。
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 页面与交互
 
-## 👀 Want to learn more?
+- 桌面保留效果图的留白、右上头像、左下导航和底部备案信息；小屏幕自动调整布局。
+- Blog 链接为 `https://blog.cloverta.top`。
+- Projects 链接为 `https://github.com/ClovertaTheTrilobita`。
+- About Me 跳转 `/about/`；根据要求，暂不创建该页面，因此访问此地址目前会返回 404。
+- 鼠标悬停或键盘聚焦菜单时，菜单放大、箭头延长，背景淡入对应的 −30° 倾斜文字。
+- About Me 的背景文字是 `More About Me`。
+- 尊重系统的减少动态效果设置。
+- 社交账号配置在 `src/data/profile.ts`。
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## 字体
+
+- 标题、别名与导航使用 **ZCOOL QingKe HuangYou**。
+- 背景文字使用 **Source Han Serif / 思源宋体**。
+- 两款开源字体均从原版裁出页面所需字符，作为本地 WOFF2 文件加载，许可证保存在 `public/fonts/`。
+- 专业与兴趣文字优先使用 **字由点字典黑**，页脚优先使用 **字由点字乐园体**；当前没有可用的供应商 CDN 嵌入代码，使用系统字体回退。
+- 已保留 CDN 样式表入口：复制 `.env.example` 为 `.env`，在 `PUBLIC_HELLOFONT_CSS_URL` 填入字体供应商提供的样式表地址。供应商样式表中的字体名称应与 `src/layouts/Layout.astro` 及 `src/components/Home.astro` 的字体栈匹配。
+
+头像与社交图标采用提供的图片；备案链接指向对应的官方查询页。
