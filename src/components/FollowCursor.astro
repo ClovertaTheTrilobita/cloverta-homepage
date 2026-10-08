@@ -10,22 +10,33 @@
 	const clickable = 'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), summary, [role="button"], [role="link"], [data-cursor="pointer"]';
 
 	if (cursor) {
-		let x = 0;
-		let y = 0;
+		const ring = cursor.querySelector<HTMLElement>('.cursor-ring')!;
+		const dot = cursor.querySelector<HTMLElement>('.cursor-dot')!;
+		let ringX = 0;
+		let ringY = 0;
+		let dotX = 0;
+		let dotY = 0;
 		let targetX = 0;
 		let targetY = 0;
 		let frame = 0;
 		let lastTime = 0;
 		let visible = false;
+		const position = () => {
+			ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
+			dot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`;
+		};
 
 		const render = (time: number) => {
 			const elapsed = lastTime ? Math.min(time - lastTime, 64) : 16;
 			lastTime = time;
-			const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed / 35);
-			x += (targetX - x) * follow;
-			y += (targetY - y) * follow;
-			cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-			if (Math.hypot(targetX - x, targetY - y) > 0.1) {
+			const ringFollow = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed / 35);
+			const dotFollow = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed / 8);
+			ringX += (targetX - ringX) * ringFollow;
+			ringY += (targetY - ringY) * ringFollow;
+			dotX += (targetX - dotX) * dotFollow;
+			dotY += (targetY - dotY) * dotFollow;
+			position();
+			if (Math.max(Math.hypot(targetX - ringX, targetY - ringY), Math.hypot(targetX - dotX, targetY - dotY)) > 0.1) {
 				frame = requestAnimationFrame(render);
 			} else {
 				frame = 0;
@@ -54,9 +65,9 @@
 			targetX = event.clientX;
 			targetY = event.clientY;
 			if (!visible) {
-				x = targetX;
-				y = targetY;
-				cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+				ringX = dotX = targetX;
+				ringY = dotY = targetY;
+				position();
 				visible = true;
 				cursor.classList.add('is-visible');
 			}
@@ -84,9 +95,9 @@
 	.follow-cursor.is-visible { opacity: 1; }
 	.cursor-ring, .cursor-dot { position: absolute; top: 0; left: 0; border-radius: 50%; transform: translate(-50%, -50%); }
 	.cursor-ring { width: 28px; height: 28px; border: 1px solid rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
-	.cursor-dot { width: 5px; height: 5px; background: rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease; }
+	.cursor-dot { width: 5px; height: 5px; background: rgb(65 65 65); opacity: .78; transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
 	.is-hovering .cursor-ring { width: 48px; height: 48px; opacity: 0; }
-	.is-hovering .cursor-dot { width: 48px; height: 48px; background: rgb(110 110 110 / 32%); }
+	.is-hovering .cursor-dot { width: 48px; height: 48px; opacity: .24; }
 	@media (prefers-reduced-motion: reduce) {
 		.follow-cursor, .cursor-ring, .cursor-dot { transition: none; }
 	}
