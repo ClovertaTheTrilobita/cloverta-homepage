@@ -3,6 +3,8 @@ import FollowCursor from "../components/FollowCursor.astro";
 
 // Optional stylesheet supplied by the font provider (HelloFont or Adobe Fonts).
 const helloFontStylesheet = import.meta.env.PUBLIC_HELLOFONT_CSS_URL;
+interface Props { title?: string; }
+const { title = "三叶草 -More About Me-" } = Astro.props;
 ---
 
 <!doctype html>
@@ -29,7 +31,7 @@ const helloFontStylesheet = import.meta.env.PUBLIC_HELLOFONT_CSS_URL;
 			)
 		}
 		<meta name="generator" content={Astro.generator} />
-		<title>三叶草 -More About Me-</title>
+		<title>{title}</title>
 	</head>
 	<body><slot /><FollowCursor /></body>
 </html>

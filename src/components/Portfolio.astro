@@ -1,0 +1,29 @@
+---
+import Home from './Home.astro';
+import About from './About.astro';
+
+interface Props { initialView?: 'home' | 'about'; }
+const { initialView = 'home' } = Astro.props;
+---
+
+<script is:inline>document.documentElement.classList.add('portfolio-js');</script>
+<div class="portfolio" data-view={initialView}>
+	<div class="home-view" inert={initialView === 'about'}><Home /></div>
+	<div class="about-view" inert={initialView === 'home'}><About /></div>
+</div>
+
+<script>
+	import '../scripts/portfolio';
+</script>
+
+<style is:global>
+	.portfolio { position: relative; min-height: 100svh; }
+	.portfolio[data-view='home'] .about-view, .portfolio[data-view='about'] .home-view { display: none; }
+	.portfolio.is-transitioning .home-view { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+	.portfolio.is-transitioning .about-view { display: block; position: relative; }
+	.portfolio.is-transitioning .return-bounce { animation: none; }
+	.portfolio.is-transitioning .about-copy { pointer-events: none; }
+	.portfolio-js .about-copy:not(.is-ready) { opacity: 0; }
+	.transition-title { position: fixed; z-index: 20; margin: 0; width: max-content; white-space: nowrap; font-family: var(--display-font); font-weight: 400; pointer-events: none; }
+	.transition-chevron { position: fixed; z-index: 20; border-top-style: solid; border-right-style: solid; border-radius: 1px; pointer-events: none; }
+</style>
