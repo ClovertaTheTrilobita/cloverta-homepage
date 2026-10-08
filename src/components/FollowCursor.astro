@@ -1,0 +1,93 @@
+<div class="follow-cursor" aria-hidden="true">
+	<span class="cursor-ring"></span>
+	<span class="cursor-dot"></span>
+</div>
+
+<script>
+	const cursor = document.querySelector<HTMLElement>('.follow-cursor');
+	const mouseAvailable = window.matchMedia('(any-hover: hover) and (any-pointer: fine)');
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+	const clickable = 'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), summary, [role="button"], [role="link"], [data-cursor="pointer"]';
+
+	if (cursor) {
+		let x = 0;
+		let y = 0;
+		let targetX = 0;
+		let targetY = 0;
+		let frame = 0;
+		let lastTime = 0;
+		let visible = false;
+
+		const render = (time: number) => {
+			const elapsed = lastTime ? Math.min(time - lastTime, 64) : 16;
+			lastTime = time;
+			const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed / 35);
+			x += (targetX - x) * follow;
+			y += (targetY - y) * follow;
+			cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+			if (Math.hypot(targetX - x, targetY - y) > 0.1) {
+				frame = requestAnimationFrame(render);
+			} else {
+				frame = 0;
+				lastTime = 0;
+			}
+		};
+
+		const updateHover = (target: EventTarget | null) => {
+			const control = target instanceof Element ? target.closest(clickable) : null;
+			cursor.classList.toggle('is-hovering', !!control && control.getAttribute('aria-disabled') !== 'true');
+		};
+
+		const hide = () => {
+			visible = false;
+			cursor.classList.remove('is-visible', 'is-hovering');
+			cancelAnimationFrame(frame);
+			frame = 0;
+			lastTime = 0;
+		};
+
+		window.addEventListener('pointermove', (event) => {
+			if (event.pointerType !== 'mouse' || !mouseAvailable.matches) {
+				hide();
+				return;
+			}
+			targetX = event.clientX;
+			targetY = event.clientY;
+			if (!visible) {
+				x = targetX;
+				y = targetY;
+				cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+				visible = true;
+				cursor.classList.add('is-visible');
+			}
+			updateHover(event.target);
+			if (!frame) frame = requestAnimationFrame(render);
+		}, { passive: true });
+		document.addEventListener('pointerover', (event) => {
+			if (visible) updateHover(event.target);
+		});
+		document.documentElement.addEventListener('pointerleave', hide);
+		window.addEventListener('blur', hide);
+		window.addEventListener('pointerdown', (event) => {
+			if (event.pointerType !== 'mouse') hide();
+		});
+		window.addEventListener('keydown', hide);
+		document.addEventListener('visibilitychange', () => {
+			if (document.hidden) hide();
+		});
+		mouseAvailable.addEventListener('change', hide);
+	}
+</script>
+
+<style>
+	.follow-cursor { position: fixed; top: 0; left: 0; width: 0; height: 0; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity 140ms ease; }
+	.follow-cursor.is-visible { opacity: 1; }
+	.cursor-ring, .cursor-dot { position: absolute; top: 0; left: 0; border-radius: 50%; transform: translate(-50%, -50%); }
+	.cursor-ring { width: 28px; height: 28px; border: 1px solid rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease, opacity 200ms ease; }
+	.cursor-dot { width: 5px; height: 5px; background: rgb(110 110 110 / 48%); transition: width 200ms ease, height 200ms ease; }
+	.is-hovering .cursor-ring { width: 48px; height: 48px; opacity: 0; }
+	.is-hovering .cursor-dot { width: 48px; height: 48px; background: rgb(110 110 110 / 32%); }
+	@media (prefers-reduced-motion: reduce) {
+		.follow-cursor, .cursor-ring, .cursor-dot { transition: none; }
+	}
+</style>

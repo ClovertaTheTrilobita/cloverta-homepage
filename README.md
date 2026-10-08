@@ -38,14 +38,16 @@ npm run build
 - 未悬停时箭头显示完整短横线，悬停时延长为虚线。
 - About Me 的背景文字是 `More About Me`。
 - 尊重系统的减少动态效果设置。
+- 鼠标光标使用半透明灰色圆环与中心点，悬停可点击元素时扩展为圆形；触摸操作不显示，支持减少动态效果设置。组件位于 `src/components/FollowCursor.astro`。
 - 社交账号配置在 `src/data/profile.ts`。
 
 ## 字体
 
 - 标题、别名与导航使用 **ZCOOL QingKe HuangYou**。
 - 背景文字使用 **Source Han Serif / 思源宋体**。
-- 两款开源字体均从原版裁出页面所需字符，作为本地 WOFF2 文件加载，许可证保存在 `public/fonts/`。
-- 专业与兴趣文字优先使用 **字由点字典黑**，页脚优先使用 **字由点字乐园体**；当前没有可用的供应商 CDN 嵌入代码，使用系统字体回退。
+- 页脚署名与备案信息使用 **Resource Han Rounded / 资源圆体**，字体来自[官方项目](https://github.com/CyanoHao/Resource-Han-Rounded/releases/tag/v0.990)的 CN Regular 字重。
+- 三款开源字体均从原版裁出页面所需字符，作为本地 WOFF2 文件加载，许可证保存在 `public/fonts/`。修改页脚文字时需要同步更新资源圆体的字符子集。
+- 专业与兴趣文字优先使用 **字由点字典黑**；当前没有可用的供应商 CDN 嵌入代码，使用系统字体回退。
 - 已保留 CDN 样式表入口：复制 `.env.example` 为 `.env`，在 `PUBLIC_HELLOFONT_CSS_URL` 填入字体供应商提供的样式表地址。供应商样式表中的字体名称应与 `src/layouts/Layout.astro` 及 `src/components/Home.astro` 的字体栈匹配。
 
 头像与社交图标采用提供的图片；备案链接指向对应的官方查询页。

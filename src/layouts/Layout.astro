@@ -1,4 +1,6 @@
 ---
+import FollowCursor from "../components/FollowCursor.astro";
+
 // Optional stylesheet supplied by the font provider (HelloFont or Adobe Fonts).
 const helloFontStylesheet = import.meta.env.PUBLIC_HELLOFONT_CSS_URL;
 ---
@@ -29,7 +31,7 @@ const helloFontStylesheet = import.meta.env.PUBLIC_HELLOFONT_CSS_URL;
 		<meta name="generator" content={Astro.generator} />
 		<title>三叶草 -More About Me-</title>
 	</head>
-	<body><slot /></body>
+	<body><slot /><FollowCursor /></body>
 </html>
 
 <style is:global>
@@ -55,10 +57,10 @@ const helloFontStylesheet = import.meta.env.PUBLIC_HELLOFONT_CSS_URL;
 		font-display: swap;
 	}
 	@font-face {
-		font-family: "HelloFont Leyuan";
-		src:
-			local("字由点字乐园体"), local("HelloFont ID Leyuan"),
-			local("IdeaFonts Leyuan"), local("点字乐园体");
+		font-family: "Resource Han Rounded";
+		src: url("/fonts/resource-han-rounded.woff2") format("woff2");
+		font-weight: 400;
+		font-style: normal;
 		font-display: swap;
 	}
 	:root {
