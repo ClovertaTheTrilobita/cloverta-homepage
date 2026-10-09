@@ -20,10 +20,12 @@ const { initialView = 'home' } = Astro.props;
 
 <style is:global>
 	.portfolio { position: relative; min-height: 100svh; isolation: isolate; }
-	.portfolio.is-transitioning, .portfolio.is-copy-entering { overflow: clip; }
-	.portfolio[data-view='home'] .about-view, .portfolio[data-view='about'] .home-view { display: none; }
-	.portfolio.is-transitioning .home-view { display: block; position: absolute; left: 0; top: 0; width: 100%; }
-	.portfolio.is-transitioning .about-view { display: block; position: relative; }
+	.portfolio.is-transitioning, .portfolio.is-preparing, .portfolio.is-copy-entering { overflow: clip; }
+	/* Keep inactive views measurable while their animation positions are prepared. */
+	.portfolio[data-view='home']:not(.is-transitioning) .about-view,
+	.portfolio[data-view='about']:not(.is-transitioning) .home-view { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; }
+	.portfolio:is(.is-preparing, .is-transitioning) .home-view { position: absolute; left: 0; top: 0; width: 100%; }
+	.portfolio:is(.is-preparing, .is-transitioning) .about-view { position: relative; }
 	.portfolio.is-transitioning .return-bounce { animation: none; }
 	.portfolio.is-transitioning .about-copy { pointer-events: none; }
 	.portfolio-js .about-copy:not(.is-ready) { opacity: 0; }
