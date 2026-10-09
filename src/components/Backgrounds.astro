@@ -1,5 +1,18 @@
 ---
 import { menuItems } from '../data/navigation';
+
+// Use the same pseudo-classes as menu expansion, including touch-generated hover.
+const home = '.portfolio[data-view="home"]:not(.is-transitioning)';
+const menu = '.menu-item:not(.is-returned)';
+const interactionStyles = menuItems.map(({ id }) => {
+	const parents = [
+		`${home}:has(${menu}[data-menu="${id}"]:hover)`,
+		`${home}:not(:has(${menu}:hover)):has(${menu}[data-menu="${id}"]:focus-visible)`,
+	];
+	const backgrounds = parents.map((parent) => `${parent} .backdrop[data-background="${id}"]`);
+	return `${backgrounds.join(', ')} { opacity: 1; }
+		${backgrounds.map((background) => `${background} .backdrop-row`).join(', ')} { animation-play-state: running; }`;
+}).join('\n');
 ---
 
 <div class="backgrounds" aria-hidden="true">
@@ -19,6 +32,8 @@ import { menuItems } from '../data/navigation';
 		</div>
 	))}
 </div>
+
+<style is:inline set:html={interactionStyles}></style>
 
 <style>
 	.backgrounds { position: fixed; inset: 0; z-index: -1; overflow: clip; pointer-events: none; --about-backdrop-shift: 50vw; }

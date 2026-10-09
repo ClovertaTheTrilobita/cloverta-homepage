@@ -53,28 +53,6 @@ import { menuItems } from '../data/navigation';
 
 </main>
 
-<script>
-	const backgrounds = document.querySelectorAll<HTMLElement>('[data-background]');
-	const portfolio = document.querySelector<HTMLElement>('.portfolio');
-	const activateBackground = (id?: string) => {
-		if (portfolio?.dataset.view !== 'home' || portfolio.classList.contains('is-transitioning')) return;
-		backgrounds.forEach((background) => background.classList.toggle('visible', background.dataset.background === id));
-	};
-	document.querySelectorAll<HTMLElement>('[data-menu]').forEach((item) => {
-		item.addEventListener('pointerenter', (event) => {
-			if (event.pointerType !== 'touch') activateBackground(item.dataset.menu);
-		});
-		item.addEventListener('pointerleave', () => {
-			if (!item.matches(':focus-visible')) activateBackground();
-		});
-		item.addEventListener('focus', () => {
-			if (item.matches(':focus-visible') && !item.classList.contains('is-returned')) activateBackground(item.dataset.menu);
-		});
-		item.addEventListener('blur', () => activateBackground());
-	});
-
-</script>
-
 <style>
 	.homepage { position: relative; min-height: 100svh; isolation: isolate; overflow: clip; }
 	.composition { position: relative; width: 88.8%; max-width: 1500px; min-height: max(700px, 100svh); margin-inline: auto; --avatar-size: clamp(240px, 22.1vw, 340px); }
