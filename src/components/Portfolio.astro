@@ -19,8 +19,8 @@ const { initialView = 'home' } = Astro.props;
 </script>
 
 <style is:global>
-	.portfolio { position: relative; min-height: 100svh; isolation: isolate; }
-	.portfolio.is-transitioning, .portfolio.is-preparing, .portfolio.is-copy-entering { overflow: clip; }
+	/* Clip inactive views' overflow without limiting the active view's natural height. */
+	.portfolio { position: relative; min-height: 100svh; isolation: isolate; overflow: clip; }
 	/* Keep inactive views measurable while their animation positions are prepared. */
 	.portfolio[data-view='home']:not(.is-transitioning) .about-view,
 	.portfolio[data-view='about']:not(.is-transitioning) .home-view { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; }
