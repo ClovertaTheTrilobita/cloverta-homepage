@@ -34,8 +34,119 @@
                 rel="noopener noreferrer">My Blog</a
             > in case you can find anything interesting.
         </p>
+        <br />
+        <h2>You Might Be Interested In...</h2>
+        <p>Don't want to jump in some random URL? I understood.</p>
+        <p>So here I listed something more about me, just in case.</p>
+        <h3>Recent Blog Posts</h3>
+        <div data-blog-posts aria-busy="false">
+            <p data-blog-posts-status role="status" hidden>
+                Loading<span data-loading-dots aria-hidden="true">.</span>
+            </p>
+            <ul data-blog-posts-list hidden></ul>
+            <p data-blog-posts-fallback hidden>
+                Visit <a
+                    href="https://blog.cloverta.top/en/"
+                    target="_blank"
+                    rel="noopener noreferrer">My Blog</a
+                > for more.
+            </p>
+            <noscript>
+                <p>
+                    Enable JavaScript to load recent posts, or visit <a
+                        href="https://blog.cloverta.top/en/"
+                        target="_blank"
+                        rel="noopener noreferrer">My Blog</a
+                    >.
+                </p>
+            </noscript>
+            <template data-blog-post-template>
+                <li><a target="_blank" rel="noopener noreferrer"></a></li>
+            </template>
+        </div>
     </div>
 </main>
+
+<script>
+    const feedUrl = "https://blog.cloverta.top/en/rss.xml";
+    const container = document.querySelector<HTMLElement>("[data-blog-posts]");
+
+    if (container) {
+        const status = container.querySelector<HTMLElement>("[data-blog-posts-status]")!;
+        const list = container.querySelector<HTMLUListElement>("[data-blog-posts-list]")!;
+        const fallback = container.querySelector<HTMLElement>("[data-blog-posts-fallback]")!;
+        const template = container.querySelector<HTMLTemplateElement>("[data-blog-post-template]")!;
+
+        const loadPosts = async () => {
+            container.setAttribute("aria-busy", "true");
+            status.hidden = false;
+            const dots = status.querySelector<HTMLElement>("[data-loading-dots]")!;
+            let dotCount = 1;
+            const loadingAnimation = window.setInterval(() => {
+                dotCount = dotCount % 3 + 1;
+                dots.textContent = ".".repeat(dotCount);
+            }, 450);
+
+            try {
+                // The RSS server must allow cross-origin requests from this site.
+                const response = await fetch(feedUrl, {
+                    cache: "no-cache",
+                    credentials: "omit",
+                    signal: AbortSignal.timeout(10_000),
+                });
+                if (!response.ok) {
+                    throw new Error(`RSS request failed: ${response.status}`);
+                }
+
+                const feed = new DOMParser().parseFromString(await response.text(), "application/xml");
+                if (feed.querySelector("parsererror")) {
+                    throw new Error("Invalid RSS XML");
+                }
+
+                const posts = document.createDocumentFragment();
+                for (const item of feed.querySelectorAll("rss > channel > item")) {
+                    const title = item.querySelector("title")?.textContent?.trim();
+                    const link = item.querySelector("link")?.textContent?.trim();
+                    if (!title || !link) continue;
+
+                    let url: URL;
+                    try {
+                        url = new URL(link, feedUrl);
+                    } catch {
+                        continue;
+                    }
+                    if (url.protocol !== "https:" && url.protocol !== "http:") continue;
+
+                    // Clone the template to preserve Astro's scoped link styles.
+                    const entry = template.content.cloneNode(true) as DocumentFragment;
+                    const anchor = entry.querySelector("a")!;
+                    anchor.href = url.href;
+                    anchor.textContent = title;
+                    posts.append(entry);
+                    if (posts.childElementCount === 10) break;
+                }
+
+                list.replaceChildren(posts);
+                if (list.childElementCount > 0) {
+                    list.hidden = false;
+                    status.hidden = true;
+                } else {
+                    status.textContent = "No posts available right now.";
+                    fallback.hidden = false;
+                }
+            } catch (error) {
+                console.warn("Unable to load recent blog posts:", error);
+                status.textContent = "Unable to load recent posts right now.";
+                fallback.hidden = false;
+            } finally {
+                window.clearInterval(loadingAnimation);
+                container.setAttribute("aria-busy", "false");
+            }
+        };
+
+        void loadPosts();
+    }
+</script>
 
 <style>
     @font-face {
@@ -111,6 +222,12 @@
     }
     .about-copy a:hover {
         color: #007a92;
+    }
+    [data-blog-posts-list] {
+        line-height: 1.65;
+    }
+    [data-blog-posts-list] li + li {
+        margin-top: 0.3em;
     }
     @keyframes return-bounce {
         0%,

@@ -20,3 +20,7 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+## Logging
+
+Do not edit [README.md](./README.md) unless required by user, put new working logs or needed readme in [AGENTLOGS.md](AGENTLOGS.md)
