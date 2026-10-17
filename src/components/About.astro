@@ -32,11 +32,11 @@
                 href="https://blog.cloverta.top"
                 target="_blank"
                 rel="noopener noreferrer">My Blog</a
-            > in case you can find anything interesting.
+            >, maybe you can find something interesting.
         </p>
         <br />
         <h2>You Might Be Interested In...</h2>
-        <p>Don't want to jump in some random URL? I understood.</p>
+        <p>Don't want to jump in some random URL? I understand.</p>
         <p>So here I listed something more about me, just in case.</p>
         <h3>Recent Blog Posts</h3>
         <div data-blog-posts aria-busy="false">
@@ -72,18 +72,28 @@
     const container = document.querySelector<HTMLElement>("[data-blog-posts]");
 
     if (container) {
-        const status = container.querySelector<HTMLElement>("[data-blog-posts-status]")!;
-        const list = container.querySelector<HTMLUListElement>("[data-blog-posts-list]")!;
-        const fallback = container.querySelector<HTMLElement>("[data-blog-posts-fallback]")!;
-        const template = container.querySelector<HTMLTemplateElement>("[data-blog-post-template]")!;
+        const status = container.querySelector<HTMLElement>(
+            "[data-blog-posts-status]",
+        )!;
+        const list = container.querySelector<HTMLUListElement>(
+            "[data-blog-posts-list]",
+        )!;
+        const fallback = container.querySelector<HTMLElement>(
+            "[data-blog-posts-fallback]",
+        )!;
+        const template = container.querySelector<HTMLTemplateElement>(
+            "[data-blog-post-template]",
+        )!;
 
         const loadPosts = async () => {
             container.setAttribute("aria-busy", "true");
             status.hidden = false;
-            const dots = status.querySelector<HTMLElement>("[data-loading-dots]")!;
+            const dots = status.querySelector<HTMLElement>(
+                "[data-loading-dots]",
+            )!;
             let dotCount = 1;
             const loadingAnimation = window.setInterval(() => {
-                dotCount = dotCount % 3 + 1;
+                dotCount = (dotCount % 3) + 1;
                 dots.textContent = ".".repeat(dotCount);
             }, 450);
 
@@ -98,15 +108,24 @@
                     throw new Error(`RSS request failed: ${response.status}`);
                 }
 
-                const feed = new DOMParser().parseFromString(await response.text(), "application/xml");
+                const feed = new DOMParser().parseFromString(
+                    await response.text(),
+                    "application/xml",
+                );
                 if (feed.querySelector("parsererror")) {
                     throw new Error("Invalid RSS XML");
                 }
 
                 const posts = document.createDocumentFragment();
-                for (const item of feed.querySelectorAll("rss > channel > item")) {
-                    const title = item.querySelector("title")?.textContent?.trim();
-                    const link = item.querySelector("link")?.textContent?.trim();
+                for (const item of feed.querySelectorAll(
+                    "rss > channel > item",
+                )) {
+                    const title = item
+                        .querySelector("title")
+                        ?.textContent?.trim();
+                    const link = item
+                        .querySelector("link")
+                        ?.textContent?.trim();
                     if (!title || !link) continue;
 
                     let url: URL;
@@ -115,10 +134,13 @@
                     } catch {
                         continue;
                     }
-                    if (url.protocol !== "https:" && url.protocol !== "http:") continue;
+                    if (url.protocol !== "https:" && url.protocol !== "http:")
+                        continue;
 
                     // Clone the template to preserve Astro's scoped link styles.
-                    const entry = template.content.cloneNode(true) as DocumentFragment;
+                    const entry = template.content.cloneNode(
+                        true,
+                    ) as DocumentFragment;
                     const anchor = entry.querySelector("a")!;
                     anchor.href = url.href;
                     anchor.textContent = title;
